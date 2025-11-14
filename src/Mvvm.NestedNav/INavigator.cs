@@ -1,11 +1,9 @@
-using NestedNav;
-
 namespace Mvvm.NestedNav;
 
 public interface INavigator
 {
-    IObservable<Screen> CurrentScreen { get; }
-    Screen CurrentScreenValue { get; }
+    IObservable<Route> CurrentRoute { get; }
+    Route CurrentRouteValue { get; }
     INavigator? ParentNavigator { get; }
     bool GoBack();
 }

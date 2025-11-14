@@ -31,12 +31,12 @@ public class NavigationHost : INavigationHost
     {
         VmFactory = vmFactory;
         Navigator = navigator;
-        Navigator.CurrentScreen
-            .Subscribe(OnNewScreen)
+        Navigator.CurrentRoute
+            .Subscribe(OnNewRoute)
             .DisposeWith(Subscriptions);
     }
 
-    protected virtual async void OnNewScreen(Screen newScreen)
+    protected virtual async void OnNewRoute(Route newRoute)
     {
         await _screenCts.CancelAsync();
         _screenCts.Dispose();
@@ -50,7 +50,7 @@ public class NavigationHost : INavigationHost
                 await CurrentViewModel.DisposeAsync();
                 if (ct.IsCancellationRequested) return;
             }
-            var vm = await VmFactory.CreateAndLoadAsync(newScreen, ct);
+            var vm = await VmFactory.CreateAndLoadAsync(newRoute, null, ct);
             if (ct.IsCancellationRequested) return;
 
             CurrentViewModel = vm;

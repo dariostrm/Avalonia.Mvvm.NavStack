@@ -10,6 +10,6 @@ public abstract record Route
 public record EmptyRoute() : Route;
 
 public record RouteToScreenWithTabs(
-    IEnumerable<Tab> Tabs,
+    IDictionary<string, Route> Tabs,
     string InitialTab
 ) : Route;

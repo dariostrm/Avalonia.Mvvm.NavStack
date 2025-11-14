@@ -6,27 +6,24 @@ namespace Mvvm.NestedNav;
 
 public class ScreenNavigator : IScreenNavigator
 {
-    private readonly BehaviorSubject<Screen> _currentScreenSubject;
-    private readonly IScreenFactory _screenFactory;
+    private readonly BehaviorSubject<Route> _currentRouteSubject;
 
-    public IObservable<Screen> CurrentScreen => _currentScreenSubject.AsObservable();
-    public Screen CurrentScreenValue => _currentScreenSubject.Value;
+    public IObservable<Route> CurrentRoute => _currentRouteSubject.AsObservable();
+    public Route CurrentRouteValue => _currentRouteSubject.Value;
     public INavigator? ParentNavigator { get; }
-    public IImmutableStack<Screen> Stack { get; private set; }
+    public IImmutableStack<Route> Stack { get; private set; }
     
-    public ScreenNavigator(Route initialRoute, INavigator? parentNavigator, IScreenFactory screenFactory)
+    public ScreenNavigator(Route initialRoute, INavigator? parentNavigator)
     {
-        _screenFactory = screenFactory;
         ParentNavigator = parentNavigator;
-        var initialScreen = _screenFactory.CreateScreen(initialRoute, this);
-        Stack = ImmutableStack<Screen>.Empty.Push(initialScreen);
-        _currentScreenSubject = new BehaviorSubject<Screen>(initialScreen);
+        Stack = ImmutableStack<Route>.Empty.Push(initialRoute);
+        _currentRouteSubject = new BehaviorSubject<Route>(initialRoute);
     }
 
     public void Navigate(Route route)
     {
-        Stack = Stack.Push(_screenFactory.CreateScreen(route, this));
-        _currentScreenSubject.OnNext(Stack.Peek());
+        Stack = Stack.Push(route);
+        _currentRouteSubject.OnNext(Stack.Peek());
     }
 
     public bool GoBack()
@@ -36,7 +33,7 @@ public class ScreenNavigator : IScreenNavigator
             return ParentNavigator?.GoBack() ?? false;
         }
         Stack = Stack.Pop();
-        _currentScreenSubject.OnNext(Stack.Peek());
+        _currentRouteSubject.OnNext(Stack.Peek());
         return true;
     }
 }
