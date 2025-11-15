@@ -4,9 +4,9 @@ namespace Mvvm.NestedNav;
 
 public interface IViewModelFactory
 {
-    Task<IScreenViewModel> CreateAndLoadAsync(
+    Task<IViewModel> CreateAndLoadAsync(
         Screen screen, 
-        IScreenNavigator screenNavigator, 
+        INavigator navigator, 
         CancellationToken cancellationToken = default
     );
     
