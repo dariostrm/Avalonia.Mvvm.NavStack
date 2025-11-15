@@ -4,7 +4,7 @@ namespace Mvvm.NestedNav;
 
 public interface IScreenViewModel : IViewModel, IAsyncDisposable
 {
-    Route Route { get; }
+    Screen Screen { get; }
     IScreenNavigator ScreenNavigator { get; }
     Task LoadAsync(CancellationToken cancellationToken = default);
 }

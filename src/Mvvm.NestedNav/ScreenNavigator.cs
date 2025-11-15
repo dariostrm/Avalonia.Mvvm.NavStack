@@ -6,23 +6,23 @@ namespace Mvvm.NestedNav;
 
 public class ScreenNavigator : IScreenNavigator
 {
-    private readonly BehaviorSubject<Route> _currentRouteSubject;
+    private readonly BehaviorSubject<Screen> _currentRouteSubject;
 
-    public IObservable<Route> CurrentRoute => _currentRouteSubject.AsObservable();
-    public Route CurrentRouteValue => _currentRouteSubject.Value;
+    public IObservable<Screen> CurrentScreen => _currentRouteSubject.AsObservable();
+    public Screen CurrentScreenValue => _currentRouteSubject.Value;
     public INavigator? ParentNavigator { get; }
-    public IImmutableStack<Route> Stack { get; private set; }
+    public IImmutableStack<Screen> Stack { get; private set; }
     
-    public ScreenNavigator(Route initialRoute, INavigator? parentNavigator)
+    public ScreenNavigator(Screen initialScreen, INavigator? parentNavigator)
     {
         ParentNavigator = parentNavigator;
-        Stack = ImmutableStack<Route>.Empty.Push(initialRoute);
-        _currentRouteSubject = new BehaviorSubject<Route>(initialRoute);
+        Stack = ImmutableStack<Screen>.Empty.Push(initialScreen);
+        _currentRouteSubject = new BehaviorSubject<Screen>(initialScreen);
     }
 
-    public void Navigate(Route route)
+    public void Navigate(Screen screen)
     {
-        Stack = Stack.Push(route);
+        Stack = Stack.Push(screen);
         _currentRouteSubject.OnNext(Stack.Peek());
     }
 

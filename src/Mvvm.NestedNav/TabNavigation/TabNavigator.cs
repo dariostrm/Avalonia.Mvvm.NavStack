@@ -6,34 +6,34 @@ namespace Mvvm.NestedNav.TabNavigation;
 
 public class TabNavigator : ITabNavigator
 {
-    private readonly BehaviorSubject<IImmutableDictionary<string, Route>> _tabsSubject;
+    private readonly BehaviorSubject<IImmutableDictionary<string, Screen>> _tabsSubject;
     private readonly BehaviorSubject<string> _currentTabKeySubject;
 
     // Emits the current screen of the current tab whenever either
     // the tabs,
     // the current tab key,
     // or the current screen of the current tab changes
-    public IObservable<Route> CurrentRoute =>
+    public IObservable<Screen> CurrentScreen =>
         _tabsSubject.CombineLatest(_currentTabKeySubject,
             (tabs, tabKey) => tabs[tabKey]);
         
 
-    public Route CurrentRouteValue => _tabsSubject.Value[_currentTabKeySubject.Value];
+    public Screen CurrentScreenValue => _tabsSubject.Value[_currentTabKeySubject.Value];
     public INavigator? ParentNavigator { get; }
     public bool GoBack()
     {
         return ParentNavigator?.GoBack() ?? false;
     }
 
-    public IObservable<IImmutableDictionary<string, Route>> Tabs => _tabsSubject.AsObservable();
+    public IObservable<IImmutableDictionary<string, Screen>> Tabs => _tabsSubject.AsObservable();
     public IObservable<string> CurrentTabKey => _currentTabKeySubject.AsObservable();
 
-    public TabNavigator(IDictionary<string, Route> tabs, string initialTabKey, INavigator? parentNavigator)
+    public TabNavigator(IDictionary<string, Screen> tabs, string initialTabKey, INavigator? parentNavigator)
     {
         ParentNavigator = parentNavigator;
         if (tabs.Count == 0)
-            throw new ArgumentException("Tab routes cannot be empty.");
-        _tabsSubject = new BehaviorSubject<IImmutableDictionary<string, Route>>(tabs.ToImmutableDictionary());
+            throw new ArgumentException("Tabs cannot be empty.");
+        _tabsSubject = new BehaviorSubject<IImmutableDictionary<string, Screen>>(tabs.ToImmutableDictionary());
         _currentTabKeySubject = new BehaviorSubject<string>(initialTabKey);
     }
     
@@ -46,13 +46,13 @@ public class TabNavigator : ITabNavigator
         _currentTabKeySubject.OnNext(tabKey);
     }
 
-    public void AddTab(string tabKey, Route tabRoute)
+    public void AddTab(string tabKey, Screen tabScreen)
     {
         if (_tabsSubject.Value.ContainsKey(tabKey))
         {
             throw new ArgumentException($"Tab with key '{tabKey}' already exists.");
         }
-        var updatedTabScreens = _tabsSubject.Value.Add(tabKey, tabRoute);
+        var updatedTabScreens = _tabsSubject.Value.Add(tabKey, tabScreen);
         _tabsSubject.OnNext(updatedTabScreens);
     }
 

@@ -4,6 +4,6 @@ namespace Mvvm.NestedNav;
 
 public interface IScreenNavigator : INavigator
 {
-    IImmutableStack<Route> Stack { get; }
-    void Navigate(Route route);
+    IImmutableStack<Screen> Stack { get; }
+    void Navigate(Screen screen);
 }
