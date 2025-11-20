@@ -1,6 +1,6 @@
 namespace Mvvm.NestedNav;
 
-public interface IViewModel : IAsyncDisposable
+public interface IViewModel
 {
     Screen Screen { get; }
     INavigator Navigator { get; }
