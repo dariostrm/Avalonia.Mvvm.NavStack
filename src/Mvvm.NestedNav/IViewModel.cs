@@ -2,7 +2,5 @@ namespace Mvvm.NestedNav;
 
 public interface IViewModel
 {
-    Screen Screen { get; }
-    INavigator Navigator { get; }
-    Task LoadAsync(CancellationToken cancellationToken = default);
+    Task LoadAsync(INavigator navigator, Screen screen, CancellationToken cancellationToken = default);
 }

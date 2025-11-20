@@ -9,6 +9,4 @@ public interface IViewModelFactory
         INavigator navigator, 
         CancellationToken cancellationToken = default
     );
-    
-    
 }

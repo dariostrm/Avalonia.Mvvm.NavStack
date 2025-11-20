@@ -23,5 +23,11 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Mvvm.NestedNav.Avalonia\Mvvm.NestedNav.Avalonia.csproj" />
+      <ProjectReference Include="..\Mvvm.NestedNav\Mvvm.NestedNav.csproj" />
     </ItemGroup>
 </Project>

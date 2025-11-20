@@ -9,9 +9,6 @@ namespace Mvvm.NestedNav.Avalonia;
 public class NavigationHost : ContentControl, INavigationHost
 {
     private readonly CompositeDisposable _disposables = new();
-    
-    public static readonly StyledProperty<IViewModelFactory> ViewModelFactoryProperty = 
-        AvaloniaProperty.Register<NavigationHost, IViewModelFactory>(nameof(ViewModelFactory));
 
     public static readonly StyledProperty<INavigator> NavigatorProperty = AvaloniaProperty.Register<NavigationHost, INavigator>(
         nameof(Navigator));
@@ -22,13 +19,24 @@ public class NavigationHost : ContentControl, INavigationHost
     public static readonly StyledProperty<IViewModel?> CurrentViewModelProperty = AvaloniaProperty.Register<NavigationHost, IViewModel?>(
         nameof(CurrentViewModel));
 
+    public NavigationHost()
+    {
+        
+    }
+
+    public NavigationHost(Screen initialScreen)
+        : this()
+    {
+        InitialScreen = initialScreen;
+    }
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
         this.GetObservable(CurrentViewModelProperty)
             .Subscribe(OnCurrentViewModelChanged)
             .DisposeWith(_disposables);
-        Navigator = new Navigator(InitialScreen, ViewModelFactory, parentNavigator: null);
+        Navigator = new Navigator(InitialScreen, ViewModelFactory.Instance, parentNavigator: null);
         Navigator.CurrentViewModel
             .Subscribe(OnNewViewModel)
             .DisposeWith(_disposables);
@@ -49,12 +57,7 @@ public class NavigationHost : ContentControl, INavigationHost
         _disposables.Dispose();
         base.OnDetachedFromVisualTree(e);
     }
-
-    public IViewModelFactory ViewModelFactory
-    {
-        get => GetValue(ViewModelFactoryProperty);
-        set => SetValue(ViewModelFactoryProperty, value);
-    }
+    
     public INavigator Navigator
     {
         get => GetValue(NavigatorProperty);

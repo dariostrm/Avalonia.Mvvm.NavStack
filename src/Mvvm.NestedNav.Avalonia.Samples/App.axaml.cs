@@ -4,6 +4,8 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
+using Microsoft.Extensions.DependencyInjection;
+using Mvvm.NestedNav.Avalonia.Samples.Screens;
 using Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 using Mvvm.NestedNav.Avalonia.Samples.Views;
 
@@ -18,15 +20,20 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddSingleton<HomeViewModel>();
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var factory = new ServiceProviderViewModelFactory(serviceProvider);
+        factory.Register<HomeScreen, HomeViewModel>();
+        factory.Register<DetailsScreen, DetailsViewModel>();
+        ViewModelFactory.RegisterSingleton(factory);
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainWindowViewModel(),
-            };
+            desktop.MainWindow = new MainWindow();
         }
 
         base.OnFrameworkInitializationCompleted();

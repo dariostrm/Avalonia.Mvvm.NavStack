@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:avalonia="clr-namespace:Mvvm.NestedNav.Avalonia;assembly=Mvvm.NestedNav.Avalonia"
+             xmlns:screens="clr-namespace:Mvvm.NestedNav.Avalonia.Samples.Screens"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Mvvm.NestedNav.Avalonia.Samples.Views.MainView">
+    
+    <avalonia:NavigationHost>
+        <avalonia:NavigationHost.InitialScreen>
+            <screens:HomeScreen/>
+        </avalonia:NavigationHost.InitialScreen>
+    </avalonia:NavigationHost>
+    
+</UserControl>
