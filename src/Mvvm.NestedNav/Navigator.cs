@@ -14,7 +14,7 @@ public class Navigator : INavigator
     private readonly IViewModelFactory _viewModelFactory;
     
     private readonly BehaviorSubject<IImmutableStack<Screen>> _stackSubject;
-    private readonly BehaviorSubject<IViewModel?> _currentViewModelSubject = new(null);
+    private readonly BehaviorSubject<IScreenViewModel?> _currentViewModelSubject = new(null);
     
     public IObservable<IImmutableStack<Screen>> Stack => _stackSubject.AsObservable();
     public IImmutableStack<Screen> StackValue => _stackSubject.Value;
@@ -22,8 +22,9 @@ public class Navigator : INavigator
     public IObservable<Screen> CurrentScreen => _stackSubject.Select(stack => stack.Peek());
     public Screen CurrentScreenValue => _stackSubject.Value.Peek();
 
-    public IObservable<IViewModel?> CurrentViewModel => _currentViewModelSubject.AsObservable();
-    public IViewModel? CurrentViewModelValue => _currentViewModelSubject.Value;
+    public IObservable<IScreenViewModel> CurrentViewModel => _currentViewModelSubject.AsObservable().Where(vm => vm != null)!;
+    public IScreenViewModel CurrentViewModelValue => _currentViewModelSubject.Value 
+                                               ?? throw new InvalidOperationException("The current ViewModel has not been loaded yet.");
 
     public INavigator? ParentNavigator { get; }
     public bool CanGoBack => StackValue.Count() > 1;

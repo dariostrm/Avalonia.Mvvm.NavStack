@@ -7,7 +7,7 @@ using Avalonia.Threading;
 
 namespace Mvvm.NestedNav.Avalonia;
 
-public class NavigationHost : ContentControl, INavigationHost
+public class NavigationHost : ContentControl
 {
     private readonly CompositeDisposable _disposables = new();
 
@@ -17,15 +17,15 @@ public class NavigationHost : ContentControl, INavigationHost
     public static readonly StyledProperty<Screen> InitialScreenProperty = AvaloniaProperty.Register<NavigationHost, Screen>(
         nameof(InitialScreen));
 
-    private IViewModel? _currentViewModel;
+    private IScreenViewModel? _currentViewModel;
 
-    public static readonly DirectProperty<NavigationHost, IViewModel?> CurrentViewModelProperty = AvaloniaProperty.RegisterDirect<NavigationHost, IViewModel?>(
+    public static readonly DirectProperty<NavigationHost, IScreenViewModel> CurrentViewModelProperty = AvaloniaProperty.RegisterDirect<NavigationHost, IScreenViewModel>(
         nameof(CurrentViewModel), o => o.CurrentViewModel, (o, v) => o.CurrentViewModel = v);
 
-    public IViewModel? CurrentViewModel
+    public IScreenViewModel CurrentViewModel
     {
-        get => _currentViewModel;
-        set => SetAndRaise(CurrentViewModelProperty, ref _currentViewModel, value);
+        get => _currentViewModel ?? throw new InvalidOperationException("Current ViewModel has not been loaded yet.");
+        set => SetAndRaise(CurrentViewModelProperty, ref _currentViewModel!, value);
     }
 
     public NavigationHost()
@@ -51,16 +51,12 @@ public class NavigationHost : ContentControl, INavigationHost
             .DisposeWith(_disposables);
     }
 
-    private void OnCurrentViewModelChanged(IViewModel? vm)
+    private void OnCurrentViewModelChanged(IScreenViewModel vm)
     {
-        if (vm == null)
-        {
-            Console.WriteLine("Warning: CurrentViewModel is null.");
-        }
         Dispatcher.UIThread.Post(() => Content = vm);
     }
 
-    private void OnNewViewModel(IViewModel? vm)
+    private void OnNewViewModel(IScreenViewModel vm)
     {
         CurrentViewModel = vm;
     }

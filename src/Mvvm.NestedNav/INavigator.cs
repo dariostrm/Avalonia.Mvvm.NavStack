@@ -8,8 +8,8 @@ public interface INavigator : IDisposable
     IImmutableStack<Screen> StackValue { get; }
     IObservable<Screen> CurrentScreen { get; }
     Screen CurrentScreenValue { get; }
-    IObservable<IViewModel?> CurrentViewModel { get; }
-    IViewModel? CurrentViewModelValue { get; }
+    IObservable<IScreenViewModel> CurrentViewModel { get; }
+    IScreenViewModel CurrentViewModelValue { get; }
     INavigator? ParentNavigator { get; }
     void Navigate(Screen screen);
     Task NavigateAsync(Screen screen);

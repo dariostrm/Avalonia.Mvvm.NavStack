@@ -6,13 +6,14 @@ using Mvvm.NestedNav.Avalonia.Samples.Screens;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
-public partial class DetailsViewModel : ViewModelBase
+[ObservableObject]
+public partial class DetailsViewModel : ScreenViewModel
 {
     [ObservableProperty] private string _message = "Details not yet loaded!";
 
-    public override async Task LoadAsync(INavigator navigator, Screen screen, CancellationToken cancellationToken = default)
+    public override void Initialize(INavigator navigator, Screen screen)
     {
-        await base.LoadAsync(navigator, screen, cancellationToken);
+        base.Initialize(navigator, screen);
         if (screen is DetailsScreen detailsScreen)
         {
             Message = detailsScreen.Message;
