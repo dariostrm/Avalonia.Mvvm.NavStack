@@ -1,12 +1,9 @@
-using System.Threading;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mvvm.NestedNav.Avalonia.Samples.Screens;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
-[ObservableObject]
 public partial class DetailsViewModel : ScreenViewModel
 {
     [ObservableProperty] private string _message = "Details not yet loaded!";

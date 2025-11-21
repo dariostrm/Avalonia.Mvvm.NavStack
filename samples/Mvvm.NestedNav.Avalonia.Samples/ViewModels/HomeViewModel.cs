@@ -6,7 +6,6 @@ using Mvvm.NestedNav.Avalonia.Samples.Screens;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
-[ObservableObject]
 public partial class HomeViewModel : ScreenViewModel
 {
     [ObservableProperty] private string _greeting = "Home not yet loaded!";

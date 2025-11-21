@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav.Avalonia", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav.Avalonia.Samples", "samples\Mvvm.NestedNav.Avalonia.Samples\Mvvm.NestedNav.Avalonia.Samples.csproj", "{D887CAAC-45BE-4CFE-AC34-DB371A9A9E32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav.Dialogs", "src\Mvvm.NestedNav.Dialogs\Mvvm.NestedNav.Dialogs.csproj", "{669BF12E-D0B5-49B2-ABDD-6929D5F064FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{D887CAAC-45BE-4CFE-AC34-DB371A9A9E32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D887CAAC-45BE-4CFE-AC34-DB371A9A9E32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D887CAAC-45BE-4CFE-AC34-DB371A9A9E32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{669BF12E-D0B5-49B2-ABDD-6929D5F064FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{669BF12E-D0B5-49B2-ABDD-6929D5F064FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{669BF12E-D0B5-49B2-ABDD-6929D5F064FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{669BF12E-D0B5-49B2-ABDD-6929D5F064FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

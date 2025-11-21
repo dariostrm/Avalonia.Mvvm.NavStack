@@ -1,6 +1,8 @@
-﻿namespace Mvvm.NestedNav;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-public abstract class ScreenViewModel : IScreenViewModel
+namespace Mvvm.NestedNav;
+
+public abstract class ScreenViewModel : ObservableValidator, IScreenViewModel
 {
     private INavigator? _navigator;
     public virtual INavigator Navigator
