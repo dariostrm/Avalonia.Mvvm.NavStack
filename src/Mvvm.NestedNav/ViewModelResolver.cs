@@ -1,6 +1,6 @@
 namespace Mvvm.NestedNav;
 
-public class ViewModelFactory
+public class ViewModelResolver
 {
     private static IViewModelResolver? _instance;
     

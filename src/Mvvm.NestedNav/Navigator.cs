@@ -27,10 +27,14 @@ public class Navigator : INavigator
     public IObservable<NavigatingEventArgs> Navigating => _navigatingSubject.AsObservable();
     public IObservable<NavigatedEventArgs> Navigated => _navigatedSubject.AsObservable();
     
-    public Navigator(IViewModelResolver viewModelResolver, INavigator? parentNavigator = null)
+    public Navigator(IViewModelResolver viewModelResolver, Screen? initialScreen = null, INavigator? parentNavigator = null)
     {
         _viewModelResolver = viewModelResolver;
         ParentNavigator = parentNavigator;
+        if (initialScreen != null)
+        {
+            Navigate(initialScreen);
+        }
     }
     
     public void OverrideBackStack(IEnumerable<Screen> screens)

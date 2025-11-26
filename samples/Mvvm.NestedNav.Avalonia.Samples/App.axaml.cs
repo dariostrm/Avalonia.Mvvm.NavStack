@@ -28,7 +28,7 @@ public partial class App : Application
         factory.Register<DetailsScreen, DetailsViewModel>();
         factory.Register<ProfileScreen, ProfileViewModel>();
         factory.Register<SettingsScreen, SettingsViewModel>();
-        ViewModelFactory.RegisterSingleton(factory);
+        ViewModelResolver.RegisterSingleton(factory);
         
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
