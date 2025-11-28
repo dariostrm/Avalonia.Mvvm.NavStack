@@ -2,34 +2,24 @@ using System.Collections.Immutable;
 
 namespace Mvvm.NestedNav;
 
-public record NavBackStack(IImmutableList<NavEntry> Entries)
+public static class NavBackStack
 {
-    public NavEntry? CurrentEntry => IsEmpty ? null : Entries[^1];
-    public Screen? CurrentScreen => CurrentEntry?.Screen;
-    public IScreenViewModel? CurrentViewModel => CurrentEntry?.ViewModel;
-    public IImmutableList<Screen> Screens => Entries.Select(e => e.Screen).ToImmutableList();
-    public bool IsEmpty => Count == 0;
-    public int Count => Entries.Count;
-    
-    public static NavBackStack Empty => new([]);
-}
-
-public static class NavBackStackExtensions
-{
-    public static NavBackStack Push(this NavBackStack stack, NavEntry entry)
+    public static NavEntry CurrentEntry(this IImmutableList<NavEntry> entries)
     {
-        return new NavBackStack(stack.Entries.Add(entry));
+        if (entries.Count == 0)
+        {
+            throw new InvalidOperationException("The navigation back stack is empty.");
+        }
+        return entries[^1];
     }
     
-    public static NavBackStack TryPop(this NavBackStack stack, out NavEntry? poppedEntry)
+    public static Screen CurrentScreen(this IImmutableList<NavEntry> entries)
     {
-        if (stack.IsEmpty)
-        {
-            poppedEntry = null;
-            return stack;
-        }
-
-        poppedEntry = stack.CurrentEntry;
-        return new NavBackStack(stack.Entries.RemoveAt(stack.Count - 1));
+        return entries.CurrentEntry().Screen;
+    }
+    
+    public static IScreenViewModel CurrentViewModel(this IImmutableList<NavEntry> entries) 
+    {
+        return entries.CurrentEntry().ViewModel;
     }
 }

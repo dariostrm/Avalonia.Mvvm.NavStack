@@ -1,73 +1,53 @@
+
 using System.Collections.Immutable;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 
 namespace Mvvm.NestedNav;
 
 public class Navigator : INavigator
 {
-    private CancellationTokenSource? _currentViewModelLoadingCts;
-    
-    private readonly CompositeDisposable _disposables = new();
     private readonly IViewModelResolver _viewModelResolver;
-
-    private readonly BehaviorSubject<NavBackStack> _stackSubject = new(NavBackStack.Empty);
     
-    public IObservable<NavBackStack> BackStack => _stackSubject.AsObservable();
-    public NavBackStack BackStackValue => _stackSubject.Value;
-
+    public IImmutableList<NavEntry> BackStack { get; private set; }
     public INavigator? ParentNavigator { get; }
-    public bool CanGoBack => BackStackValue.Entries.Count() > 1;
-
-    private readonly Subject<NavigatingEventArgs> _navigatingSubject = new();
-    private readonly Subject<NavigatedEventArgs> _navigatedSubject = new();
     
-    public IObservable<NavigatingEventArgs> Navigating => _navigatingSubject.AsObservable();
-    public IObservable<NavigatedEventArgs> Navigated => _navigatedSubject.AsObservable();
+    public event EventHandler<NavigatingEventArgs>? Navigating;
+    public event EventHandler<NavigatedEventArgs>? Navigated;
     
-    public Navigator(IViewModelResolver viewModelResolver, Screen? initialScreen = null, INavigator? parentNavigator = null)
+    public Navigator(IViewModelResolver viewModelResolver, Screen initialScreen, INavigator? parentNavigator = null)
     {
         _viewModelResolver = viewModelResolver;
         ParentNavigator = parentNavigator;
-        if (initialScreen != null)
-        {
-            Navigate(initialScreen);
-        }
+        var initialEntry = CreateEntry(initialScreen);
+        BackStack = ImmutableList.Create(initialEntry);
     }
-    
+
+    public virtual bool CanGoBack() => BackStack.Count > 1;
+
     public void OverrideBackStack(IEnumerable<Screen> screens)
     {
         var newBackStack = screens
-            .Select(screen => NavEntry.Create(screen, _viewModelResolver))
-            .Aggregate(NavBackStack.Empty, (stack, entry) => stack.Push(entry));
+            .Select(CreateEntry)
+            .Aggregate(ImmutableList<NavEntry>.Empty, (backstack, entry) => backstack.Add(entry));
         SetBackStack(newBackStack);
     }
     
-    private void SetBackStack(NavBackStack newBackStack)
+    private void SetBackStack(IImmutableList<NavEntry> newBackStack)
     {
-        var oldEntry = BackStackValue.CurrentEntry;
-        oldEntry?.ViewModel.OnNavigatingFrom();
-        var newEntry = newBackStack.CurrentEntry;
-        CheckForClosingViewModels(BackStackValue, newBackStack);
-        _navigatingSubject.OnNext(new NavigatingEventArgs(oldEntry?.Screen, oldEntry?.ViewModel, newEntry?.Screen));
-        _stackSubject.OnNext(newBackStack);
-        if (newEntry == null)
-            return;
-        LoadNewViewModel(newEntry.Screen, newEntry.ViewModel, onLoaded: () =>
-        {
-            oldEntry?.ViewModel.OnNavigatedFrom();
-            newEntry.ViewModel.OnNavigatedTo();
-            _navigatedSubject.OnNext(new NavigatedEventArgs(oldEntry?.Screen, newEntry.Screen, newEntry.ViewModel));
-        });
+        var oldEntry = BackStack.CurrentEntry();
+        var oldScreen = oldEntry.Screen;
+        oldEntry.ViewModel.OnNavigatingFrom();
+        var newEntry = newBackStack.CurrentEntry();
+        CheckForClosingViewModels(BackStack, newBackStack);
+        Navigating?.Invoke(this, new NavigatingEventArgs(oldScreen, oldEntry.ViewModel, newEntry.Screen));
+        BackStack = newBackStack;
+        oldEntry.ViewModel.OnNavigatedFrom();
+        newEntry.ViewModel.OnNavigatedTo();
+        Navigated?.Invoke(this, new NavigatedEventArgs(oldScreen, newEntry.Screen, newEntry.ViewModel));
     }
     
-    private void CheckForClosingViewModels(NavBackStack oldStack, NavBackStack newStack)
+    private void CheckForClosingViewModels(IImmutableList<NavEntry> oldStack, IImmutableList<NavEntry> newStack)
     {
-        var oldEntries = oldStack.Entries;
-        var newEntries = newStack.Entries;
-        var entriesToClose = oldEntries.Except(newEntries).ToList();
+        var entriesToClose = oldStack.Except(newStack).ToList();
         foreach (var entry in entriesToClose)
         {
             entry.ViewModel.OnClosing();
@@ -76,84 +56,44 @@ public class Navigator : INavigator
 
     public void Navigate(Screen screen)
     {
-        var newBackStack = BackStackValue.Push(NavEntry.Create(screen, _viewModelResolver));
+        var newBackStack = BackStack.Add(CreateEntry(screen));
         SetBackStack(newBackStack);
     }
 
     public void GoBack()
     {
-        var newBackStack = BackStackValue.TryPop(out var poppedEntry);
-        if (poppedEntry == null)
+        if (!CanGoBack())
             return;
+        var newBackStack = BackStack.RemoveAt(BackStack.Count - 1);
         SetBackStack(newBackStack);
-    }
-
-    public void GoBackOrClear()
-    {
-        if (CanGoBack)
-            GoBack();
-        else
-            Clear();
     }
 
     public void GoBackTo(Screen screen)
     {
-        var newBackStack = BackStackValue;
-        while (!newBackStack.IsEmpty && newBackStack.CurrentScreen?.Equals(screen) == false)
+        if (!BackStack.Any(entry => entry.Screen.Equals(screen)))
+            return;
+        var newBackStack = BackStack.ToList();
+        while (!newBackStack.Last().Screen.Equals(screen))
         {
-            newBackStack = newBackStack.TryPop(out _);
+            newBackStack.RemoveAt(newBackStack.Count - 1);
         }
-        SetBackStack(newBackStack);
+        SetBackStack(newBackStack.ToImmutableList());
     }
 
     public void ClearAndSet(Screen screen) => OverrideBackStack([screen]);
-
-    public void Clear() => OverrideBackStack([]);
+    
 
     public void ReplaceCurrent(Screen screen)
     {
-        var newBackStack = BackStackValue.TryPop(out _);
-        newBackStack = newBackStack.Push(NavEntry.Create(screen, _viewModelResolver));
+        var newBackStack = BackStack.RemoveAt(BackStack.Count - 1);
+        newBackStack = newBackStack.Add(CreateEntry(screen));
         SetBackStack(newBackStack);
     }
-
-    private void LoadNewViewModel(Screen screen, IScreenViewModel vm, Action? onLoaded = null)
-    {
-        _ = LoadNewViewModelAsyncWithCallback(screen, vm, onLoaded);
-    }
     
-    private async Task LoadNewViewModelAsyncWithCallback(Screen screen, IScreenViewModel vm, Action? onLoaded)
+    private NavEntry CreateEntry(Screen screen)
     {
-        await LoadNewViewModelAsync(screen, vm);
-        onLoaded?.Invoke();
-    }
-    
-    private async Task LoadNewViewModelAsync(Screen screen, IScreenViewModel vm)
-    {
-        var newCts = new CancellationTokenSource();
-        
-        Interlocked.Exchange(ref _currentViewModelLoadingCts, newCts);
-        var token = newCts.Token;
-        
-        try
-        {
-            vm.Initialize(this, screen);
-            await vm.LoadAsync(token);
-        }
-        catch (OperationCanceledException)
-        {
-            //expected
-        }
-    }
-    
-
-    public void Dispose()
-    {
-        _currentViewModelLoadingCts?.Cancel();
-        _currentViewModelLoadingCts?.Dispose();
-        _disposables.Dispose();
-        _stackSubject.Dispose();
-        _navigatingSubject.Dispose();
-        _navigatedSubject.Dispose();
+        var vm = _viewModelResolver.ResolveViewModel(screen);
+        vm.Initialize(this, screen);
+        return new NavEntry(screen, vm);
     }
 }

@@ -1,15 +1,9 @@
-﻿using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Mvvm.NestedNav;
 
 public abstract class ScreenViewModel : ObservableValidator, IScreenViewModel
 {
-    private readonly BehaviorSubject<ViewModelLifecycleState> _lifecycleStateSubject 
-        = new(ViewModelLifecycleState.Created);
-
-    public IObservable<ViewModelLifecycleState> LifecycleState => _lifecycleStateSubject.AsObservable();
     
     private INavigator? _navigator;
     public virtual INavigator Navigator
@@ -31,27 +25,12 @@ public abstract class ScreenViewModel : ObservableValidator, IScreenViewModel
         Screen = screen;
     }
 
-    public virtual Task LoadAsync(CancellationToken cancellationToken = default)
-    {
-        _lifecycleStateSubject.OnNext(ViewModelLifecycleState.Loading);
-        return Task.CompletedTask;
-    }
-
-    public virtual void OnNavigatedTo()
-    {
-        _lifecycleStateSubject.OnNext(ViewModelLifecycleState.Active);
-    }
+    public virtual void OnNavigatedTo() {}
 
     public virtual void OnNavigatingFrom() {}
 
-    public virtual void OnNavigatedFrom()
-    {
-        _lifecycleStateSubject.OnNext(ViewModelLifecycleState.Inactive);
-    }
+    public virtual void OnNavigatedFrom() {}
     
-    public virtual void OnClosing()
-    {
-        _lifecycleStateSubject.OnNext(ViewModelLifecycleState.Closing);
-    }
+    public virtual void OnClosing() {}
 
 }
