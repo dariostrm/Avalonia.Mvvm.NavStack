@@ -1,3 +1,39 @@
 namespace Mvvm.NestedNav;
 
-public record NavEntry(Route Route, IViewModel ViewModel);
+public record NavEntry(Route Route, IViewModel ViewModel)
+{
+    public NavEntryLifecycleState LifecycleState { get; private set; }
+    public event EventHandler<NavEntryLifecycleState>? StateChanged;
+    public event EventHandler? Destroyed;
+
+    public void OnNavigatedTo()
+    {
+        ViewModel.OnNavigatedTo();
+        SetLifecycleState(NavEntryLifecycleState.Active);
+    }
+    
+    public void OnNavigatedFrom()
+    {
+        ViewModel.OnNavigatedFrom();
+        SetLifecycleState(NavEntryLifecycleState.Inactive);
+    }
+    
+    public void OnDestroy()
+    {
+        ViewModel.OnDestroy();
+        SetLifecycleState(NavEntryLifecycleState.Destroyed);
+    }
+    
+    private void SetLifecycleState(NavEntryLifecycleState newState)
+    {
+        if (LifecycleState != newState)
+        {
+            LifecycleState = newState;
+            StateChanged?.Invoke(this, newState);
+            if (newState == NavEntryLifecycleState.Destroyed)
+            {
+                Destroyed?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+}

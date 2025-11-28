@@ -10,16 +10,14 @@ public interface INavigator
     
     // Navigation Methods
     bool CanGoBack();
-    void OverrideBackStack(IEnumerable<Route> routes);
-    void Navigate(Route route);
-    void GoBack();
-    void GoBackTo(Route route);
-    void ClearAndSet(Route route);
-    void ReplaceCurrent(Route route);
+    NavEntry OverrideBackStack(IEnumerable<Route> routes);
+    NavEntry Navigate(Route route);
+    NavEntry GoBack();
+    NavEntry GoBackTo(Route route);
+    NavEntry ClearAndSet(Route route);
+    NavEntry ReplaceCurrent(Route route);
     
-    event EventHandler<NavigatingEventArgs>? Navigating;
     event EventHandler<NavigatedEventArgs>? Navigated;
 }
 
-public record NavigatingEventArgs(Route OldRoute, IViewModel OldViewModel, Route NewRoute);
-public record NavigatedEventArgs(Route OldRoute, Route NewRoute, IViewModel NewViewModel);
+public record NavigatedEventArgs(Route OldRoute, NavEntry NewEntry);

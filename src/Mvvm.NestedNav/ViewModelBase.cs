@@ -37,9 +37,7 @@ public abstract class ViewModelBase<TRoute> : ObservableValidator, IViewModel
 
     public virtual void OnNavigatedTo() {}
 
-    public virtual void OnNavigatingFrom() {}
-
     public virtual void OnNavigatedFrom() {}
     
-    public virtual void OnClosing() {}
+    public virtual void OnDestroy() {}
 }

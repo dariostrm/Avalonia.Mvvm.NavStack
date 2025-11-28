@@ -1,10 +1,9 @@
 namespace Mvvm.NestedNav;
 
-public enum ViewModelLifecycleState
+public enum NavEntryLifecycleState
 {
     Created,
-    Loading,
     Active,
     Inactive,
-    Closing
+    Destroyed
 }

@@ -10,7 +10,6 @@ public class Navigator : INavigator
     public IImmutableStack<NavEntry> BackStack { get; private set; }
     public INavigator? ParentNavigator { get; }
     
-    public event EventHandler<NavigatingEventArgs>? Navigating;
     public event EventHandler<NavigatedEventArgs>? Navigated;
     
     public Navigator(IViewModelFactory viewModelFactory, Route initialRoute, INavigator? parentNavigator = null)
@@ -23,71 +22,70 @@ public class Navigator : INavigator
 
     public virtual bool CanGoBack() => BackStack.Count() > 1;
 
-    public void OverrideBackStack(IEnumerable<Route> routes)
+    public NavEntry OverrideBackStack(IEnumerable<Route> routes)
     {
         var newBackStack = routes
             .Select(CreateEntry)
             .Aggregate(ImmutableStack<NavEntry>.Empty, (backstack, entry) => backstack.Push(entry));
-        SetBackStack(newBackStack);
+        return SetBackStack(newBackStack);
     }
     
-    private void SetBackStack(IImmutableStack<NavEntry> newBackStack)
+    private NavEntry SetBackStack(IImmutableStack<NavEntry> newBackStack)
     {
         var oldEntry = BackStack.CurrentEntry();
         var oldRoute = oldEntry.Route;
-        oldEntry.ViewModel.OnNavigatingFrom();
         var newEntry = newBackStack.CurrentEntry();
-        CheckForClosingViewModels(BackStack, newBackStack);
-        Navigating?.Invoke(this, new NavigatingEventArgs(oldRoute, oldEntry.ViewModel, newEntry.Route));
         BackStack = newBackStack;
-        oldEntry.ViewModel.OnNavigatedFrom();
-        newEntry.ViewModel.OnNavigatedTo();
-        Navigated?.Invoke(this, new NavigatedEventArgs(oldRoute, newEntry.Route, newEntry.ViewModel));
+        oldEntry.OnNavigatedFrom();
+        DestroyRemovedEntries(BackStack, newBackStack);
+        newEntry.OnNavigatedTo();
+        Navigated?.Invoke(this, new NavigatedEventArgs(oldRoute, newEntry));
+        return newEntry;
     }
     
-    private void CheckForClosingViewModels(IImmutableStack<NavEntry> oldStack, IImmutableStack<NavEntry> newStack)
+    private void DestroyRemovedEntries(IImmutableStack<NavEntry> oldStack, IImmutableStack<NavEntry> newStack)
     {
-        var entriesToClose = oldStack.Except(newStack).ToList();
-        foreach (var entry in entriesToClose)
+        var entriesToDestroy = oldStack.Except(newStack).ToList();
+        foreach (var entry in entriesToDestroy)
         {
-            entry.ViewModel.OnClosing();
+            entry.OnDestroy();
         }
     }
 
-    public void Navigate(Route route)
+    public NavEntry Navigate(Route route)
     {
         var newBackStack = BackStack.Push(CreateEntry(route));
-        SetBackStack(newBackStack);
+        return SetBackStack(newBackStack);
     }
 
-    public void GoBack()
+    public NavEntry GoBack()
     {
         if (!CanGoBack())
-            return;
+            return BackStack.CurrentEntry();
         var newBackStack = BackStack.Pop();
-        SetBackStack(newBackStack);
+        return SetBackStack(newBackStack);
     }
 
-    public void GoBackTo(Route route)
+    public NavEntry GoBackTo(Route route)
     {
         if (!BackStack.Any(entry => entry.Route.Equals(route)))
-            return;
+            return BackStack.CurrentEntry();
         var newBackStack = BackStack;
         while (!newBackStack.CurrentEntry().Route.Equals(route))
         {
             newBackStack = newBackStack.Pop();
         }
-        SetBackStack(newBackStack);
+        return SetBackStack(newBackStack);
     }
 
-    public void ClearAndSet(Route route) => OverrideBackStack([route]);
+    public NavEntry ClearAndSet(Route route) => OverrideBackStack([route]);
     
 
-    public void ReplaceCurrent(Route route)
+    public NavEntry ReplaceCurrent(Route route)
     {
         var newBackStack = BackStack.Pop();
         newBackStack = newBackStack.Push(CreateEntry(route));
-        SetBackStack(newBackStack);
+        return SetBackStack(newBackStack);
     }
     
     private NavEntry CreateEntry(Route route)
