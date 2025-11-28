@@ -4,15 +4,15 @@ public interface IDialogHost
 {
     bool IsDialogOpen { get; }
     
-    void ShowDialog(DialogScreen dialogScreen, Action onClosed);
+    void ShowDialog(DialogRoute dialogRoute, Action onClosed);
     
-    Task ShowDialogAsync(DialogScreen dialogScreen);
+    Task ShowDialogAsync(DialogRoute dialogRoute);
     
     void ShowDialog<TDialogResult>(
-        DialogScreen<TDialogResult> dialogScreen,
+        DialogRoute dialogRoute,
         Action<TDialogResult?> onClosed
     ) where TDialogResult : class;
     
-    Task<TDialogResult?> ShowDialogAsync<TDialogResult>(DialogScreen<TDialogResult> dialogScreen) 
+    Task<TDialogResult?> ShowDialogAsync<TDialogResult>(DialogRoute dialogRoute) 
         where TDialogResult : class;
 }

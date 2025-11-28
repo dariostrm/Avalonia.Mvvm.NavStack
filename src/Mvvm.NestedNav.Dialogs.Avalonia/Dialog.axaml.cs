@@ -1,5 +1,3 @@
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
@@ -15,15 +13,11 @@ namespace Mvvm.NestedNav.Dialogs.Avalonia;
 
 public class Dialog : TemplatedControl
 {
-    private readonly CompositeDisposable _disposables = new();
     private TopLevel? _topLevel;
     private IInputElement? _focusedElementBeforeOpen;
     private Thickness _baseMargin;
     public Dialog()
     {
-        this.GetObservable(DataContextProperty)
-            .Subscribe(OnDataContextChanged)
-            .DisposeWith(_disposables);
         _baseMargin = Margin;
     }
 
@@ -32,19 +26,20 @@ public class Dialog : TemplatedControl
         Classes.AddRange(classes);
     }
 
-    private void OnDataContextChanged(object? dataContext)
+    protected override void OnDataContextChanged(EventArgs e)
     {
-        if (dataContext is not DialogViewModel) return;
+        base.OnDataContextChanged(e);
+        if (DataContext is not IDialogViewModel) return;
 
-        this[!PrimaryButtonTextProperty] = new Binding(nameof(DialogViewModel.PrimaryButtonText));
-        this[!SecondaryButtonTextProperty] = new Binding(nameof(DialogViewModel.SecondaryButtonText));
-        this[!CloseButtonTextProperty] = new Binding(nameof(DialogViewModel.CloseButtonText));
-        this[!IsSecondaryButtonVisibleProperty] = new Binding(nameof(DialogViewModel.IsSecondaryButtonVisible));
-        this[!IsCloseButtonVisibleProperty] = new Binding(nameof(DialogViewModel.IsCloseButtonVisible));
-        this[!TitleProperty] = new Binding(nameof(DialogViewModel.Title));
-        this[!RequestCloseCommandProperty] = new Binding(nameof(DialogViewModel.RequestCloseCommand));
-        this[!PrimaryCommandProperty] = new Binding(nameof(DialogViewModel.PrimaryCommand));
-        this[!SecondaryCommandProperty] = new Binding(nameof(DialogViewModel.SecondaryCommand));
+        this[!PrimaryButtonTextProperty] = new Binding(nameof(IDialogViewModel.PrimaryButtonText));
+        this[!SecondaryButtonTextProperty] = new Binding(nameof(IDialogViewModel.SecondaryButtonText));
+        this[!CloseButtonTextProperty] = new Binding(nameof(IDialogViewModel.CloseButtonText));
+        this[!IsSecondaryButtonVisibleProperty] = new Binding(nameof(IDialogViewModel.IsSecondaryButtonVisible));
+        this[!IsCloseButtonVisibleProperty] = new Binding(nameof(IDialogViewModel.IsCloseButtonVisible));
+        this[!TitleProperty] = new Binding(nameof(IDialogViewModel.Title));
+        this[!RequestCloseCommandProperty] = new Binding(nameof(IDialogViewModel.RequestCloseCommand));
+        this[!PrimaryCommandProperty] = new Binding(nameof(IDialogViewModel.PrimaryCommand));
+        this[!SecondaryCommandProperty] = new Binding(nameof(IDialogViewModel.SecondaryCommand));
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -110,7 +105,6 @@ public class Dialog : TemplatedControl
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        _disposables.Dispose();
         //restore focus to previously focused element
         if (_focusedElementBeforeOpen != null)
         {
@@ -122,7 +116,7 @@ public class Dialog : TemplatedControl
 
     protected override void OnKeyDown(KeyEventArgs e)
     {
-        var vm = DataContext as DialogViewModel;
+        var vm = DataContext as IDialogViewModel;
         switch (e.Key)
         {
             case Key.Escape:

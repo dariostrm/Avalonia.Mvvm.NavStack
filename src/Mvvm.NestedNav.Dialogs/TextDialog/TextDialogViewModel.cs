@@ -5,7 +5,7 @@ using Mvvm.NestedNav.Exceptions;
 
 namespace Mvvm.NestedNav.Dialogs.TextDialog;
 
-public partial class TextDialogViewModel : DialogViewModel<string>
+public partial class TextDialogViewModel : DialogViewModel<TextDialogRoute, string>
 {
     [CustomValidation(typeof(TextDialogViewModel), nameof(ValidateText))]
     [ObservableProperty] private string _text = string.Empty;
@@ -18,19 +18,17 @@ public partial class TextDialogViewModel : DialogViewModel<string>
 
     public TextDialogViewModel()
     {
-        SetPrimaryAction(() => RequestClose(Text), canExecute: () => !HasErrors);
+        SetPrimaryCanExecute(() => !HasErrors);
     }
 
-    public override void Initialize(INavigator navigator, Route route)
+    public override void Initialize(INavigator navigator, TextDialogRoute route)
     {
         base.Initialize(navigator, route);
-        if (route is not TextDialogScreen textDialogRoute)
-            throw new InvalidScreenException(nameof(TextDialogViewModel));
-        Text = textDialogRoute.InitialText;
-        Placeholder = textDialogRoute.Placeholder ?? string.Empty;
-        InputLabel = textDialogRoute.InputLabel;
-        PasswordChar = textDialogRoute.IsPassword ? '●' : null;
-        Validation = textDialogRoute.Validation;
+        Text = route.InitialText;
+        Placeholder = route.Placeholder ?? string.Empty;
+        InputLabel = route.InputLabel;
+        PasswordChar = route.IsPassword ? '●' : null;
+        Validation = route.Validation;
         StateChanged();
     }
 
@@ -51,6 +49,6 @@ public partial class TextDialogViewModel : DialogViewModel<string>
 
     partial void OnTextChanged(string value)
     {
-        StateChanged();
+        Result = value;
     }
 }

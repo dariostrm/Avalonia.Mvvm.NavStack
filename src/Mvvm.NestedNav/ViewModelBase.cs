@@ -2,7 +2,7 @@
 
 namespace Mvvm.NestedNav;
 
-public abstract class ViewModelBase<TRoute> : IViewModel
+public abstract class ViewModelBase<TRoute> : ObservableValidator, IViewModel
     where TRoute : Route
 {
     private INavigator? _navigator;

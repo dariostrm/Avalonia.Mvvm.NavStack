@@ -4,7 +4,6 @@ using Mvvm.NestedNav.Avalonia.Samples.Routes;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
-[ObservableObject]
 public partial class HomeViewModel : ViewModelBase<HomeRoute>
 {
     [ObservableProperty] private string _greeting = "Home not yet loaded!";

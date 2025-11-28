@@ -4,7 +4,6 @@ using Mvvm.NestedNav.Avalonia.Samples.Routes;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
-[ObservableObject]
 public partial class DetailsViewModel : ViewModelBase<DetailsRoute>
 {
     [ObservableProperty] private string _message = "Details not yet loaded!";

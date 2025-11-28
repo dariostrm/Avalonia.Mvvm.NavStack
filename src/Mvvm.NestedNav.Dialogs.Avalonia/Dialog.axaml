@@ -5,9 +5,6 @@
     <Design.PreviewWith>
         <Border Padding="20">
             <avalonia:Dialog Title="test">
-                <avalonia:Dialog.DataContext>
-                    <dialogs1:DialogViewModel/>
-                </avalonia:Dialog.DataContext>
                 <avalonia:Dialog.MainContent>
                     <TextBlock Text="Teeeest"/>
                 </avalonia:Dialog.MainContent>

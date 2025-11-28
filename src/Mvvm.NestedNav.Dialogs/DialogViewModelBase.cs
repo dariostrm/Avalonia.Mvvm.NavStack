@@ -1,12 +1,11 @@
-using System.ComponentModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mvvm.NestedNav.Exceptions;
 
 namespace Mvvm.NestedNav.Dialogs;
 
-public partial class DialogViewModel : ViewModelBase, IDialogViewModel
+public partial class DialogViewModelBase<TRoute> : ViewModelBase<TRoute>, IDialogViewModel
+    where TRoute : DialogRoute
 {
     [ObservableProperty] private string _title = "Dialog";
 
@@ -15,21 +14,35 @@ public partial class DialogViewModel : ViewModelBase, IDialogViewModel
 
     [ObservableProperty] private string _secondaryButtonText = string.Empty;
     [ObservableProperty] private bool _isSecondaryButtonVisible;
-    [ObservableProperty] private ICommand _secondaryCommand = new RelayCommand(() => { });
+    [ObservableProperty] private ICommand _secondaryCommand;
 
     [ObservableProperty] private string _closeButtonText = "Cancel";
     [ObservableProperty] private bool _isCloseButtonVisible = true;
     
     public event EventHandler? Closed;
+    
+    protected Action PrimaryAction { get; private set; }
+    protected Func<bool> CanExecutePrimary { get; private set; } = () => true;
 
-    public DialogViewModel()
+    protected Action SecondaryAction { get; private set; } = () => { };
+    protected Func<bool> CanExecuteSecondary { get; private set; } = () => true;
+
+    public DialogViewModelBase()
     {
-        PrimaryCommand = new RelayCommand(Close);
+        PrimaryAction = Close;
+        PrimaryCommand = new RelayCommand(PrimaryAction, CanExecutePrimary);
+        SecondaryCommand = new RelayCommand(SecondaryAction, CanExecuteSecondary);
+    }
+    
+    public override void Initialize(INavigator navigator, TRoute route)
+    {
+        base.Initialize(navigator, route);
+        Title = route.Title;
     }
 
-    protected virtual void Close()
+    protected void Close()
     {
-        if (Navigator.CanGoBack)
+        if (Navigator.CanGoBack())
             Navigator.GoBack();
         else
             Closed?.Invoke(this, EventArgs.Empty);
@@ -38,47 +51,11 @@ public partial class DialogViewModel : ViewModelBase, IDialogViewModel
     [RelayCommand]
     public virtual void RequestClose() => Close();
     
-    protected void StateChanged()
+    protected virtual void StateChanged()
     {
-        ValidateAllProperties();
         ((IRelayCommand)PrimaryCommand).NotifyCanExecuteChanged();
         ((IRelayCommand)SecondaryCommand).NotifyCanExecuteChanged();
     }
-}
-
-public abstract partial class DialogViewModel<TResult> : DialogViewModel, IDialogViewModel<TResult> 
-    where TResult : class
-{
-    public TResult? Result { get; protected set; }
-    
-    protected Action PrimaryAction { get; private set; } = null!;
-    protected Func<bool> CanExecutePrimary { get; private set; } = null!;
-
-    protected Action SecondaryAction { get; private set; } = null!;
-    protected Func<bool> CanExecuteSecondary { get; private set; } = null!;
-
-    protected DialogViewModel()
-    {
-        SetPrimaryAction(() => RequestClose(Result));
-        SetSecondaryAction(() => RequestClose(Result));
-    }
-
-    public override void Initialize(INavigator navigator, Route route)
-    {
-        base.Initialize(navigator, route);
-        if (route is not DialogScreen<TResult> dialogScreen)
-            throw new InvalidScreenException(nameof(DialogViewModel<TResult>));
-        Title = dialogScreen.Title;
-    }
-
-    protected void RequestClose(TResult? result)
-    {
-        Result = result;
-        RequestClose();
-    }
-
-    [RelayCommand]
-    public void Cancel() => RequestClose(null);
     
     protected void SetPrimaryAction(Action action, Func<bool>? canExecute = null)
     {
@@ -101,5 +78,18 @@ public abstract partial class DialogViewModel<TResult> : DialogViewModel, IDialo
     {
         CanExecuteSecondary = canExecute;
         SecondaryCommand = new RelayCommand(SecondaryAction, CanExecuteSecondary);
+    }
+}
+
+public abstract partial class DialogViewModel<TRoute, TResult> 
+    : DialogViewModelBase<TRoute>, IDialogViewModel<TResult> 
+    where TResult : class
+    where TRoute : DialogRoute
+{
+    [ObservableProperty] private TResult? _result;
+
+    partial void OnResultChanged(TResult? value)
+    {
+        StateChanged();
     }
 }

@@ -4,7 +4,6 @@ using Mvvm.NestedNav.Avalonia.Samples.Routes;
 
 namespace Mvvm.NestedNav.Avalonia.Samples.ViewModels;
 
-[ObservableObject]
 public partial class ProfileViewModel : ViewModelBase<ProfileRoute>
 {
     [ObservableProperty] private string _greeting = "Welcome to profile page!";
