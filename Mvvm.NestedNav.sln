@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav", "src\Mvvm.NestedNav\Mvvm.NestedNav.csproj", "{1BC9828B-FAA9-44F9-A43B-9FB0F13AC528}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav.Avalonia", "src\Mvvm.NestedNav.Avalonia\Mvvm.NestedNav.Avalonia.csproj", "{C4F1BB12-7075-413A-B903-70298B877D16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav.Avalonia.Samples", "samples\Mvvm.NestedNav.Avalonia.Samples\Mvvm.NestedNav.Avalonia.Samples.csproj", "{D887CAAC-45BE-4CFE-AC34-DB371A9A9E32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{1BC9828B-FAA9-44F9-A43B-9FB0F13AC528}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BC9828B-FAA9-44F9-A43B-9FB0F13AC528}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BC9828B-FAA9-44F9-A43B-9FB0F13AC528}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4F1BB12-7075-413A-B903-70298B877D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4F1BB12-7075-413A-B903-70298B877D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4F1BB12-7075-413A-B903-70298B877D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4F1BB12-7075-413A-B903-70298B877D16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D887CAAC-45BE-4CFE-AC34-DB371A9A9E32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D887CAAC-45BE-4CFE-AC34-DB371A9A9E32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D887CAAC-45BE-4CFE-AC34-DB371A9A9E32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D887CAAC-45BE-4CFE-AC34-DB371A9A9E32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
