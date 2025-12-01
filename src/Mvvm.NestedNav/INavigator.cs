@@ -5,19 +5,15 @@ namespace Mvvm.NestedNav;
 public interface INavigator
 {
     IImmutableStack<NavEntry> BackStack { get; }
+    NavEntry CurrentEntry { get; }
     
-    INavigator? ParentNavigator { get; }
-    
-    // Navigation Methods
     bool CanGoBack();
-    NavEntry OverrideBackStack(IEnumerable<Route> routes);
-    NavEntry Navigate(Route route);
-    NavEntry GoBack();
-    NavEntry GoBackTo(Route route);
-    NavEntry ClearAndSet(Route route);
-    NavEntry ReplaceCurrent(Route route);
+    void OverrideBackStack(IEnumerable<Route> routes);
+    void Navigate(Route route);
+    bool GoBack();
+    bool GoBackTo(Route route);
+    void ClearAndSet(Route route);
+    void ReplaceCurrent(Route route);
     
-    event EventHandler<NavigatedEventArgs>? Navigated;
+    event Action<IImmutableStack<NavEntry>>? BackStackChanged;
 }
-
-public record NavigatedEventArgs(Route OldRoute, NavEntry NewEntry);

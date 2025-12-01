@@ -7,7 +7,8 @@ public class ViewModelFactory(Func<Route, IViewModel> viewModelResolver) : IView
     public IViewModel CreateViewModel(Route route, INavigator navigator)
     {
         var vm = viewModelResolver(route);
-        vm.OnInitialize(navigator);
+        if (vm is ViewModelBase vmBase)
+            vmBase.Navigator = navigator;
         return vm;
     }
 }

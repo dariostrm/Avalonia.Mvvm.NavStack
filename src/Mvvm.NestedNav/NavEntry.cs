@@ -8,7 +8,7 @@ public record NavEntry(Route Route, IViewModel ViewModel)
 
     public void OnNavigatedTo()
     {
-        ViewModel.OnActivate();
+        ViewModel.OnBecomeVisible();
         SetLifecycleState(NavEntryLifecycleState.Active);
     }
     

@@ -11,21 +11,21 @@
     
     <TabControl Margin="5">
         <TabItem Header="Home">
-            <avalonia:NavigationHost ViewModelFactory="{Binding ViewModelFactory}">
+            <avalonia:NavigationHost>
                 <avalonia:NavigationHost.InitialRoute>
                     <routes:HomeRoute/>
                 </avalonia:NavigationHost.InitialRoute>
             </avalonia:NavigationHost>
         </TabItem>
         <TabItem Header="Settings">
-            <avalonia:NavigationHost ViewModelFactory="{Binding ViewModelFactory}">
+            <avalonia:NavigationHost>
                 <avalonia:NavigationHost.InitialRoute>
                     <routes:SettingsRoute/>
                 </avalonia:NavigationHost.InitialRoute>
             </avalonia:NavigationHost>
         </TabItem>
         <TabItem Header="Profile">
-            <avalonia:NavigationHost ViewModelFactory="{Binding ViewModelFactory}">
+            <avalonia:NavigationHost>
                 <avalonia:NavigationHost.InitialRoute>
                     <routes:ProfileRoute/>
                 </avalonia:NavigationHost.InitialRoute>

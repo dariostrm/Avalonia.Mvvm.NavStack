@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Mvvm.NestedNav.Avalonia.Samples.Routes;
@@ -34,7 +35,8 @@ public partial class App : Application
         serviceCollection.AddSingleton<MainViewModel>();
         var serviceProvider = serviceCollection.BuildServiceProvider();
         
-        
+        var vmFactory = serviceProvider.GetRequiredService<IViewModelFactory>();
+        Resources["ViewModelFactory"] = vmFactory;
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 

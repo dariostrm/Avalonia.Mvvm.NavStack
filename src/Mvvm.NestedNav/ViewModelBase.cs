@@ -2,21 +2,19 @@
 
 namespace Mvvm.NestedNav;
 
-public abstract class ViewModelBase : ObservableValidator, IViewModel
+public abstract class ViewModelBase() : ObservableValidator, IViewModel
 {
     private INavigator? _navigator;
-    public virtual INavigator Navigator
-    {
-        get => _navigator ?? throw new InvalidOperationException("The ViewModel has not been initialized yet.");
-        private set => _navigator = value;
-    }
     
-    public virtual void OnInitialize(INavigator navigator)
+    protected internal INavigator Navigator
     {
-        Navigator = navigator;
+        get => _navigator 
+               ?? throw new InvalidOperationException("The Navigator is not available in the constructor. " +
+                                                      "Use it only after the ViewModel has been created.");
+        internal set => _navigator = value;
     }
 
-    public virtual void OnActivate() {}
+    public virtual void OnBecomeVisible() {}
 
     public virtual void OnMoveToBackground() {}
     

@@ -1,6 +1,6 @@
-﻿using Avalonia;
+﻿using System.Collections.Immutable;
+using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
 
@@ -25,10 +25,10 @@ public class NavigationHost : ContentControl
 
     private IViewModel? _currentViewModel;
 
-    public static readonly DirectProperty<NavigationHost, IViewModel> CurrentViewModelProperty = AvaloniaProperty.RegisterDirect<NavigationHost, IViewModel>(
+    public static readonly DirectProperty<NavigationHost, IViewModel?> CurrentViewModelProperty = AvaloniaProperty.RegisterDirect<NavigationHost, IViewModel?>(
         nameof(CurrentViewModel), o => o.CurrentViewModel, (o, v) => o.CurrentViewModel = v);
 
-    public IViewModel CurrentViewModel
+    public IViewModel? CurrentViewModel
     {
         get => _currentViewModel ?? throw new InvalidOperationException("NavigationHost not initialized yet.");
         set => SetAndRaise(CurrentViewModelProperty, ref _currentViewModel!, value);
@@ -46,7 +46,7 @@ public class NavigationHost : ContentControl
         ViewModelFactory = viewModelFactory;
     }
 
-    private void SetCurrentViewModel(IViewModel viewModel)
+    private void SetCurrentViewModel(IViewModel? viewModel)
     {
         CurrentViewModel = viewModel;
         Dispatcher.UIThread.Post(() => Content = viewModel);
@@ -55,27 +55,31 @@ public class NavigationHost : ContentControl
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        if(this.TryFindResource("ViewModelFactory", out object? factory) && factory is IViewModelFactory vmFactory)
+        {
+            ViewModelFactory = vmFactory;
+        }
+        
         if (InitialRoute is null)
             throw new InvalidOperationException("The " + nameof(InitialRoute) +" has not been set on the navigation host.");
         if (ViewModelFactory is null)
             throw new InvalidOperationException("The " + nameof(ViewModelFactory) + " has not been set on the navigation host.");
-        Navigator = new Navigator(ViewModelFactory, InitialRoute, parentNavigator: null);
-        SetCurrentViewModel(Navigator.BackStack.CurrentViewModel());
-        Navigator.Navigated += OnNavigated;
+        Navigator = new Navigator(ViewModelFactory, InitialRoute);
+        SetCurrentViewModel(Navigator.CurrentEntry.ViewModel);
+        Navigator.BackStackChanged += OnBackStackChanged;
+    }
+
+    private void OnBackStackChanged(IImmutableStack<NavEntry> backStack)
+    {
+        var newViewModel = backStack.Peek().ViewModel;
+        SetCurrentViewModel(newViewModel);
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        Navigator.Navigated -= OnNavigated;
+        Navigator.BackStackChanged -= OnBackStackChanged;
         base.OnDetachedFromLogicalTree(e);
     }
-
-    private void OnNavigated(object? sender, NavigatedEventArgs e)
-    {
-        var newViewModel = Navigator.BackStack.CurrentViewModel();
-        SetCurrentViewModel(newViewModel);
-    }
-    
 
     public INavigator Navigator
     {
