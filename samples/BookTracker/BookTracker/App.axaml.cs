@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
@@ -6,6 +7,8 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using BookTracker.ViewModels;
 using BookTracker.Views;
+using Microsoft.Extensions.DependencyInjection;
+using Mvvm.NestedNav;
 
 namespace BookTracker;
 
@@ -18,22 +21,30 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddSingleton<Func<Route, IViewModel>>(serviceProvider => route => route switch
+        {
+            AboutTab => new AboutViewModel(),
+            BooksTab => new BooksViewModel(),
+            SettingsTab => new SettingsViewModel(),
+            _ => throw new ArgumentOutOfRangeException(nameof(route))
+        });
+        serviceCollection.AddSingleton<IViewModelFactory, ViewModelFactory>();
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        
+        var viewModelFactory = serviceProvider.GetRequiredService<IViewModelFactory>();
+        Resources.Add("ViewModelFactory", viewModelFactory);
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainViewModel()
-            };
+            desktop.MainWindow = new MainWindow();
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new MainView
-            {
-                DataContext = new MainViewModel()
-            };
+            singleViewPlatform.MainView = new MainView();
         }
 
         base.OnFrameworkInitializationCompleted();

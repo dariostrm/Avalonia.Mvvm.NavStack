@@ -20,5 +20,13 @@
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Lucide.Avalonia" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="ShadUI" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Mvvm.NestedNav.Avalonia\Mvvm.NestedNav.Avalonia.csproj" />
+    <ProjectReference Include="..\..\..\src\Mvvm.NestedNav\Mvvm.NestedNav.csproj" />
   </ItemGroup>
 </Project>

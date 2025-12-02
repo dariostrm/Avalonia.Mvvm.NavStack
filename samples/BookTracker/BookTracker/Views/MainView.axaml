@@ -3,6 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:BookTracker.ViewModels"
+             xmlns:avalonia="clr-namespace:Mvvm.NestedNav.Avalonia;assembly=Mvvm.NestedNav.Avalonia"
+             xmlns:bookTracker="clr-namespace:BookTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BookTracker.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -12,5 +14,52 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
-  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <TabControl>
+        <TabItem>
+            <TabItem.Header>
+                <StackPanel Spacing="5">
+                    <LucideIcon Kind="Library"/>
+                    <TextBlock Text="Books"/>
+                </StackPanel>
+            </TabItem.Header>
+            <TabItem.Content>
+                <avalonia:NavigationHost>
+                    <avalonia:NavigationHost.InitialRoute>
+                        <bookTracker:BooksTab/>
+                    </avalonia:NavigationHost.InitialRoute>
+                </avalonia:NavigationHost>
+            </TabItem.Content>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <StackPanel Spacing="5">
+                    <LucideIcon Kind="Settings"/>
+                    <TextBlock Text="Settings"/>
+                </StackPanel>
+            </TabItem.Header>
+            <TabItem.Content>
+                <avalonia:NavigationHost>
+                    <avalonia:NavigationHost.InitialRoute>
+                        <bookTracker:SettingsTab/>
+                    </avalonia:NavigationHost.InitialRoute>
+                </avalonia:NavigationHost>
+            </TabItem.Content>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <StackPanel Spacing="5">
+                    <LucideIcon Kind="Info"/>
+                    <TextBlock Text="About"/>
+                </StackPanel>
+            </TabItem.Header>
+            <TabItem.Content>
+                <avalonia:NavigationHost>
+                    <avalonia:NavigationHost.InitialRoute>
+                        <bookTracker:AboutTab/>
+                    </avalonia:NavigationHost.InitialRoute>
+                </avalonia:NavigationHost>
+            </TabItem.Content>
+        </TabItem>
+    </TabControl>
+  
 </UserControl>
