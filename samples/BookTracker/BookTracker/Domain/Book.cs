@@ -12,4 +12,9 @@ public record Book(
 {
     public static Book Create(string title, string author, int pages) =>
         new(Guid.NewGuid(), title, author, pages, false);
+
+    public Book() : this(Guid.NewGuid(), string.Empty, string.Empty, 0, false)
+    {
+        
+    }
 }

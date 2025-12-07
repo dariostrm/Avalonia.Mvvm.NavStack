@@ -2,7 +2,68 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BookTracker.Views.BooksView">
-    Welcome to Books page!
+             xmlns:viewModels="clr-namespace:BookTracker.ViewModels"
+             xmlns:domain="clr-namespace:BookTracker.Domain"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="800"
+             x:Class="BookTracker.Views.BooksView"
+             x:DataType="viewModels:BooksViewModel">
+
+    <Grid>
+        <Grid RowDefinitions="Auto, *">
+
+            <TextBlock Text="Books" FontSize="24" FontWeight="Bold" Margin="10"/>
+
+            <ScrollViewer Grid.Row="1"
+                          Margin="10 10 10 0">
+                <ItemsControl ItemsSource="{Binding Books}">
+
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="domain:Book">
+
+                            <Button Padding="15"
+                                    Classes="BookItem"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch">
+                                <Grid ColumnDefinitions="*, 3*">
+                                    <!-- Placeholder for book cover image -->
+                                    <Border Background="IndianRed"
+                                            CornerRadius="10"
+                                            Height="125"/>
+                                    
+                                    <StackPanel Grid.Column="1"
+                                                Margin="20 10 0 0"
+                                                Spacing="5">
+                                        <TextBlock Text="{Binding Title}"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Author}"
+                                                   FontSize="14"
+                                                   Foreground="Gray"/>
+                                        <TextBlock Foreground="Gray">
+                                            <Run Text="{Binding Pages}"/>
+                                            <Run>Pages</Run>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+
+                </ItemsControl>
+            </ScrollViewer>
+            
+            <Grid.Styles>
+                <Style Selector="Button.BookItem">
+                    <Setter Property="Background" Value="Transparent"/>
+                </Style>
+            </Grid.Styles>
+
+        </Grid>
+        
+        
+        
+    </Grid>
+    
 </UserControl>

@@ -7,6 +7,7 @@ namespace BookTracker.Domain;
 public class DummyBookRepository : IBookRepository
 {
     private readonly List<Book> _books = [];
+    private bool _loaded = false;
     
     public event Action<IList<Book>>? BooksChanged;
 
@@ -19,9 +20,16 @@ public class DummyBookRepository : IBookRepository
         _books.Add(Book.Create(title: "Pride and Prejudice", author: "Jane Austen", pages: 279));
     }
     
-    public Task<IList<Book>> GetBooksAsync()
+    public async Task<IList<Book>> GetBooksAsync()
     {
-        return Task.FromResult<IList<Book>>(_books);
+        if (!_loaded)
+        {
+            // Simulate async operation
+            await Task.Delay(2000);
+        }
+        
+        _loaded = true;
+        return _books;
     }
 
     public async Task<Book?> GetBookAsync(Guid id)

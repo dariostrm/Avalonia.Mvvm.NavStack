@@ -28,7 +28,9 @@ public partial class App : Application
         serviceCollection.AddSingleton<Func<Route, IViewModel>>(serviceProvider => route => route switch
         {
             AboutTab => new AboutViewModel(),
-            BooksTab => new BooksViewModel(),
+            BooksTab => new BooksViewModel(
+                bookRepository: serviceProvider.GetRequiredService<IBookRepository>()
+            ),
             SettingsTab => new SettingsViewModel(),
             _ => throw new ArgumentOutOfRangeException(nameof(route))
         });
