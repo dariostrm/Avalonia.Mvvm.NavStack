@@ -8,4 +8,8 @@ public record Book(
     string Author,
     int Pages,
     bool IsRead
-);
+)
+{
+    public static Book Create(string title, string author, int pages) =>
+        new(Guid.NewGuid(), title, author, pages, false);
+}

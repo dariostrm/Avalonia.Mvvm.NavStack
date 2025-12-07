@@ -9,12 +9,14 @@ public class DummyBookRepository : IBookRepository
     private readonly List<Book> _books = [];
     
     public event Action<IList<Book>>? BooksChanged;
-    
-    public void SetDummyData(IList<Book> books)
+
+    public DummyBookRepository()
     {
-        _books.Clear();
-        _books.AddRange(books);
-        BooksChanged?.Invoke(_books);
+        //Dummy data
+        _books.Add(Book.Create(title: "The Great Gatsby", author: "F. Scott Fitzgerald", pages: 180));
+        _books.Add(Book.Create(title: "To Kill a Mockingbird", author: "Harper Lee", pages: 281));
+        _books.Add(Book.Create(title: "1984", author: "George Orwell", pages: 328));
+        _books.Add(Book.Create(title: "Pride and Prejudice", author: "Jane Austen", pages: 279));
     }
     
     public Task<IList<Book>> GetBooksAsync()

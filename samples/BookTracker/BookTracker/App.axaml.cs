@@ -5,6 +5,7 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
+using BookTracker.Domain;
 using BookTracker.ViewModels;
 using BookTracker.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,8 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var serviceCollection = new ServiceCollection();
+        serviceCollection.AddSingleton<IBookRepository, DummyBookRepository>();
+        
         serviceCollection.AddSingleton<Func<Route, IViewModel>>(serviceProvider => route => route switch
         {
             AboutTab => new AboutViewModel(),
@@ -30,6 +33,7 @@ public partial class App : Application
             _ => throw new ArgumentOutOfRangeException(nameof(route))
         });
         serviceCollection.AddSingleton<IViewModelFactory, ViewModelFactory>();
+        
         var serviceProvider = serviceCollection.BuildServiceProvider();
         
         var viewModelFactory = serviceProvider.GetRequiredService<IViewModelFactory>();
