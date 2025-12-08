@@ -3,8 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:BookTracker.ViewModels"
-             xmlns:avalonia="clr-namespace:Mvvm.NestedNav.Avalonia;assembly=Mvvm.NestedNav.Avalonia"
+             xmlns:avalonia="clr-namespace:Mvvm.NavStack.Avalonia;assembly=Avalonia.Mvvm.NavStack"
              xmlns:bookTracker="clr-namespace:BookTracker"
+             xmlns:navStack="clr-namespace:Avalonia.Mvvm.NavStack;assembly=Avalonia.Mvvm.NavStack"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BookTracker.Views.MainView"
              x:DataType="vm:MainViewModel"
@@ -30,11 +31,11 @@
                 </StackPanel>
             </TabItem.Header>
             <TabItem.Content>
-                <avalonia:NavigationHost>
-                    <avalonia:NavigationHost.InitialRoute>
+                <navStack:NavigationHost>
+                    <navStack:NavigationHost.InitialRoute>
                         <bookTracker:BooksTab/>
-                    </avalonia:NavigationHost.InitialRoute>
-                </avalonia:NavigationHost>
+                    </navStack:NavigationHost.InitialRoute>
+                </navStack:NavigationHost>
             </TabItem.Content>
         </TabItem>
         <TabItem>
@@ -45,11 +46,11 @@
                 </StackPanel>
             </TabItem.Header>
             <TabItem.Content>
-                <avalonia:NavigationHost>
-                    <avalonia:NavigationHost.InitialRoute>
+                <navStack:NavigationHost>
+                    <navStack:NavigationHost.InitialRoute>
                         <bookTracker:SettingsTab/>
-                    </avalonia:NavigationHost.InitialRoute>
-                </avalonia:NavigationHost>
+                    </navStack:NavigationHost.InitialRoute>
+                </navStack:NavigationHost>
             </TabItem.Content>
         </TabItem>
         <TabItem>
@@ -60,11 +61,11 @@
                 </StackPanel>
             </TabItem.Header>
             <TabItem.Content>
-                <avalonia:NavigationHost>
-                    <avalonia:NavigationHost.InitialRoute>
+                <navStack:NavigationHost>
+                    <navStack:NavigationHost.InitialRoute>
                         <bookTracker:AboutTab/>
-                    </avalonia:NavigationHost.InitialRoute>
-                </avalonia:NavigationHost>
+                    </navStack:NavigationHost.InitialRoute>
+                </navStack:NavigationHost>
             </TabItem.Content>
         </TabItem>
     </TabControl>

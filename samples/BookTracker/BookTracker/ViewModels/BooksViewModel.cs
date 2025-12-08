@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BookTracker.Domain;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mvvm.NestedNav;
+using Mvvm.NavStack;
 
 namespace BookTracker.ViewModels;
 

@@ -1,5 +1,5 @@
 using System;
-using Mvvm.NestedNav;
+using Mvvm.NavStack;
 
 namespace BookTracker;
 

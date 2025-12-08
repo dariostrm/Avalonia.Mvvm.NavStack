@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Mvvm.NestedNav\Mvvm.NestedNav.csproj" />
+      <ProjectReference Include="..\Mvvm.NavStack\Mvvm.NavStack.csproj" />
     </ItemGroup>
 
 </Project>

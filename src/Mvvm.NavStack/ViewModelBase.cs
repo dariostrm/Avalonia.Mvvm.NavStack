@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Mvvm.NestedNav;
+namespace Mvvm.NavStack;
 
 public abstract class ViewModelBase : ObservableValidator, IViewModel
 {

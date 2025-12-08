@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav", "src\Mvvm.NestedNav\Mvvm.NestedNav.csproj", "{1BC9828B-FAA9-44F9-A43B-9FB0F13AC528}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NavStack", "src\Mvvm.NavStack\Mvvm.NavStack.csproj", "{1BC9828B-FAA9-44F9-A43B-9FB0F13AC528}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.NestedNav.Avalonia", "src\Mvvm.NestedNav.Avalonia\Mvvm.NestedNav.Avalonia.csproj", "{C4F1BB12-7075-413A-B903-70298B877D16}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.Mvvm.NavStack", "src\Avalonia.Mvvm.NavStack\Avalonia.Mvvm.NavStack.csproj", "{C4F1BB12-7075-413A-B903-70298B877D16}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9AAE243C-A85A-4AC9-8650-1C493E4705F9}"
 EndProject

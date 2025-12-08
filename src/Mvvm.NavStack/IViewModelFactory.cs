@@ -1,4 +1,4 @@
-namespace Mvvm.NestedNav;
+namespace Mvvm.NavStack;
 
 public interface IViewModelFactory
 {

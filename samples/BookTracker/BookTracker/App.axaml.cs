@@ -9,7 +9,7 @@ using BookTracker.Domain;
 using BookTracker.ViewModels;
 using BookTracker.Views;
 using Microsoft.Extensions.DependencyInjection;
-using Mvvm.NestedNav;
+using Mvvm.NavStack;
 
 namespace BookTracker;
 

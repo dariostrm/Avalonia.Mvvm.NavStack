@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 
-namespace Mvvm.NestedNav;
+namespace Mvvm.NavStack;
 
 public class Navigator : INavigator
 {

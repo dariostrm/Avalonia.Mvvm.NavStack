@@ -1,11 +1,10 @@
-﻿using System.Collections.Immutable;
-using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
+using Mvvm.NavStack;
 
-namespace Mvvm.NestedNav.Avalonia;
+namespace Avalonia.Mvvm.NavStack;
 
 public class NavigationHost : ContentControl
 {

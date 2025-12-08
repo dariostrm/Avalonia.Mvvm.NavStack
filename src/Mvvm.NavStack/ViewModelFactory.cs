@@ -1,4 +1,4 @@
-namespace Mvvm.NestedNav;
+namespace Mvvm.NavStack;
 
 public class ViewModelFactory(Func<Route, IViewModel> viewModelResolver) : IViewModelFactory
 {
