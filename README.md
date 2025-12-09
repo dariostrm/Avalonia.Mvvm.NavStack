@@ -7,6 +7,7 @@ A lightweight C#/Avalonia navigation library built to work with the CommunityToo
 - Easy parameterized navigation
 - First-class support for Dependency Injection (easy to mix navigation parameters with services in constructors)
 - Handles the physical back button
+- Supports animations via the `PageTransition` property on the `NavigationHost`
 - Leverages the built-in TabControl for tab navigation, as well as the ViewLocator for View/ViewModel resolution
 - Lifecycle hooks for navigation entries
 - Simple and intuitive API

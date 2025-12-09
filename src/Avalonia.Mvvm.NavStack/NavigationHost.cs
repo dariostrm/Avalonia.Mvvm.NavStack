@@ -1,4 +1,6 @@
-﻿using Avalonia.Controls;
+using Avalonia.Animation;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
@@ -6,10 +8,12 @@ using Mvvm.NavStack;
 
 namespace Avalonia.Mvvm.NavStack;
 
+
+
 public class NavigationHost : ContentControl
 {
     private TopLevel? _topLevel;
-    
+
     public static readonly StyledProperty<INavigator> NavigatorProperty = AvaloniaProperty.Register<NavigationHost, INavigator>(
         nameof(Navigator));
 
@@ -32,13 +36,28 @@ public class NavigationHost : ContentControl
 
     public IViewModel? CurrentViewModel
     {
-        get => _currentViewModel ?? throw new InvalidOperationException("NavigationHost not initialized yet.");
+        get => _currentViewModel;
         set => SetAndRaise(CurrentViewModelProperty, ref _currentViewModel!, value);
+    }
+
+    public static readonly StyledProperty<IPageTransition> PageTransitionProperty = AvaloniaProperty.Register<NavigationHost, IPageTransition>(
+        nameof(PageTransition), defaultValue: new ScaleTransition());
+
+    public IPageTransition PageTransition
+    {
+        get => GetValue(PageTransitionProperty);
+        set => SetValue(PageTransitionProperty, value);
     }
 
     public NavigationHost()
     {
-        
+        var transitioningContentControl = new TransitioningContentControl
+        {
+            [!ContentProperty] = this[!CurrentViewModelProperty],
+            [!PageTransitionProperty] = this[!PageTransitionProperty],
+            PageTransition = PageTransition
+        };
+        Content = transitioningContentControl;
     }
 
     public NavigationHost(Route initialRoute, IViewModelFactory viewModelFactory)
@@ -50,8 +69,7 @@ public class NavigationHost : ContentControl
 
     private void SetCurrentViewModel(IViewModel? viewModel)
     {
-        CurrentViewModel = viewModel;
-        Dispatcher.UIThread.Post(() => Content = viewModel);
+        Dispatcher.UIThread.Post(() => CurrentViewModel = viewModel);
     }
 
     protected override void OnInitialized()
