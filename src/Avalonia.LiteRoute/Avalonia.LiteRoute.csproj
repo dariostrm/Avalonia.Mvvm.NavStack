@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <PackageId>Avalonia.LiteRoute</PackageId>
+        <PackageId>LiteRoute.Avalonia</PackageId>
         <Version>0.1.0-beta</Version>
         <Authors>dariostrm</Authors>
         <Company>Open Source</Company>
