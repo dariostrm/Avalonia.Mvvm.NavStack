@@ -21,7 +21,7 @@ public class Navigator : INavigator
 
     public bool CanGoBack() => BackStack.Count() > 1;
 
-    public void OverrideBackStack(IEnumerable<Route> routes)
+    public void ReplaceHistory(IEnumerable<Route> routes)
     {
         var routeList = routes.ToList();
         if (routeList.Count == 0)
@@ -81,7 +81,7 @@ public class Navigator : INavigator
         return true;
     }
 
-    public void ClearAndSet(Route route) => OverrideBackStack([route]);
+    public void ClearAndSet(Route route) => ReplaceHistory([route]);
     
 
     public void ReplaceCurrent(Route route)

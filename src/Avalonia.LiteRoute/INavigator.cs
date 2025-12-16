@@ -8,7 +8,7 @@ public interface INavigator
     NavEntry CurrentEntry { get; }
     
     bool CanGoBack();
-    void OverrideBackStack(IEnumerable<Route> routes);
+    void ReplaceHistory(IEnumerable<Route> routes);
     void Navigate(Route route);
     bool GoBack();
     bool GoBackTo(Route route);
