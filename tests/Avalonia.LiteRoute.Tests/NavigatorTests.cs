@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using NSubstitute;
 
 namespace Avalonia.LiteRoute.Tests;
@@ -50,5 +51,38 @@ public class NavigatorTests
 
         // Assert
         Assert.True(navigator.CanGoBack());
+    }
+    
+    [Fact]
+    public void ReplaceHistory_Should_Throw_WhenHistoryIsEmpty()
+    {
+        // Arrange
+        var navigator = new Navigator(_factory, new TestRoute());
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => navigator.ReplaceHistory([]));
+    }
+
+    [Fact]
+    public void ReplaceHistory_Should_ReplaceBackStack_And_RaiseEvent()
+    {
+        // Arrange
+        var navigator = new Navigator(_factory, new TestRoute());
+        Route[] routes = [new TestRoute2(), new TestRoute3()];
+        _factory.CreateViewModel(Arg.Any<Route>(), Arg.Any<INavigator>())
+            .Returns(Substitute.For<IViewModel>());
+        bool eventRaised = false;
+        IImmutableStack<NavEntry>? capturedBackStack = null;
+        navigator.BackStackChanged += backStack => { eventRaised = true; capturedBackStack = backStack; };
+        
+        // Act
+        navigator.ReplaceHistory(routes);
+        
+        // Assert
+        Assert.Equal(2, navigator.BackStack.Count());
+        var actualRoutes = navigator.BackStack.Select(entry => entry.Route).Reverse();
+        Assert.Equal(routes, actualRoutes);
+        Assert.True(eventRaised);
+        Assert.Equal(navigator.BackStack, capturedBackStack);
     }
 }
